@@ -1,0 +1,14 @@
+#!/bin/bash
+#BSUB -J ACC_MP_TUT
+#BSUB -n 1
+#BSUB -e out/stderr
+#BSUB -o out/stdout
+#BSUB -q s822lc_p100
+#BSUB -x
+
+export OMP_NUM_THREADS=20
+export OMP_PROC_BIND=spread
+export OMP_DISPLAY_ENV=false
+rm -f out/*
+mkdir -p out
+$SANDBOX ./main

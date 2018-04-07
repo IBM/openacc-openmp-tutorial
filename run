@@ -1,0 +1,8 @@
+#!/bin/bash
+
+export OMP_NUM_THREADS=20
+export OMP_PROC_BIND=spread
+export OMP_DISPLAY_ENV=false
+rm -f out/*
+mkdir -p out
+$SANDBOX ./main

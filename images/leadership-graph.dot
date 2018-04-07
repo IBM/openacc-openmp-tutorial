@@ -1,0 +1,42 @@
+graph {
+    node [width=.4, height=.4,fixedsize=true];
+    node [shape=circle,]; A -- B;
+    A -- C; B -- D; B -- E; B -- F;
+    node [shape=circle];
+    edge [color=red];
+    node [color=red];
+    C [shape=square, color=red];
+    C -- C1; C -- C2; C -- C3; C -- C4; C4 -- C41; C4--C42; 
+    edge [color=darkgreen];
+    node [color=darkgreen];
+    D [shape=square, color=darkgreen];
+    D -- D1; D -- D2; D -- D3; D -- D4; D3 -- D31; D3--D32;
+    edge [color=blue];
+    node [color=blue];
+    E [shape=square, color=blue];
+    E -- E1; E -- E2; E -- E3; E -- E4;
+    edge [color=darkviolet];
+    node [color=darkviolet];
+    F [shape=square, color=darkviolet];
+    F -- F1; F -- F2;
+
+    D1[label=<<SUP> </SUP>D<SUB>1</SUB>>];
+    D2[label=<<SUP> </SUP>D<SUB>2</SUB>>];
+    D3[label=<<SUP> </SUP>D<SUB>3</SUB>>];
+    D4[label=<<SUP> </SUP>D<SUB>4</SUB>>];
+    E1[label=<<SUP> </SUP>E<SUB>1</SUB>>];
+    E2[label=<<SUP> </SUP>E<SUB>2</SUB>>];
+    E3[label=<<SUP> </SUP>E<SUB>3</SUB>>];
+    E4[label=<<SUP> </SUP>E<SUB>4</SUB>>];
+    C1[label=<<SUP> </SUP>C<SUB>1</SUB>>];
+    C2[label=<<SUP> </SUP>C<SUB>2</SUB>>];
+    C3[label=<<SUP> </SUP>C<SUB>3</SUB>>];
+    C4[label=<<SUP> </SUP>C<SUB>4</SUB>>];
+    F1[label=<<SUP> </SUP>F<SUB>1</SUB>>];
+    F2[label=<<SUP> </SUP>F<SUB>2</SUB>>];
+    D31[label=<...>]; D32[label=<...>];
+    C41[label=<...>]; C42[label=<...>];
+
+}
+
+     

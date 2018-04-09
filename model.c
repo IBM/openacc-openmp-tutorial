@@ -295,13 +295,14 @@ void attack_defend_fight(int attack, int defend) {
 		} else 	if (md/ma>ratio) {
 			//defend wins
 			actions[attack].new_parent=defend;
-			actions[attack].rm+=.1/params.dt;
-			actions[defend].rm-=.1/params.dt;
+			float rm=.1/params.dt;
+			actions[attack].rm+=rm;
+			actions[defend].rm-=rm;
 		} else {
 			//mass transfer to heavier one
-			float dm=params.fight_mass_rate*(ma-md)/(ma+md);
-			actions[defend].rm-=dm;
-			actions[attack].rm+=dm;
+			float rm=params.fight_mass_rate*(ma-md)/(ma+md);
+			actions[defend].rm-=rm;
+			actions[attack].rm+=rm;
 		}
 	}
 }

@@ -11,10 +11,13 @@ We enlarge the previous example from [Step 4](../../blob/step4/step.md) in the s
 The `third_kernel` depends on output of `host_kernel, first_kernel, second_kernel`, which in turn are independent of each other and therefore can, in priciple, run parallel to each other.
 The listing below is the parallelized version from file [acc-example/main-async.c](acc-example/main-async.c), the serial version may be found in file [acc-example/main.c](acc-example/main.c)
 
-With OpenACC, most directies can take the additional argument `async(queue-list)` and `wait(queue-list)` where queue-list is a comma-separated list of integers identifying so-called *async queues*.
+With OpenACC, most directies can take the additional argument `async(queue)` and `wait(queue-list)` where `queue` is an integer identfying so-called *async queues*, and `queue-list` is a comma-separated list of these.
+Using these, each execution of a kernel or transfer can be forced
+* to wait for completion of existing entries in the async queues specifed by `queue-list`,
+* and then to run in a specific async queue `queue`,
+Additionally there is a `#pragma acc wait` which acts like a barrier to completion of all oustanding queue-entries.
 
-In the listing below, look for these, and compare the serial and parallel versions of the file.
-
+In the listing below, look for these, and compare the serial and parallel versions of the file:
 ```C
 #define N 65536
 
@@ -81,6 +84,7 @@ int main() {
 ```
 Below a screenshot of what the timeline of an execution of the serial (i.e., non-parallelized) version:
 ![](acc-example/example-async.png)
+
 Below a screenshot of what the timeline of an execution of the parallelized version:
 ![](acc-example/example-serial.png)
 As you can see the serial version executed kernels `first_kernel`, `second_kernel`, `host_kernel`, `data copy` and `third_kernel` serially, not utilizing many of the available compute resources on host and device.

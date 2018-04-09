@@ -5,17 +5,17 @@ This is an advanced tutorial to OpenACC and OpenMP.
 In this step we are going to 
 * overlap host and device computation and communication
 
-### asynchroneous OpenACC
+## Asynchronous OpenACC
 Just like in CUDA, using so-called *CUDA-streams*, OpenACC offers the ability to run multiple device kernels at the same time in parallel to each other, using so-called *async queues*.
 We enlarge the previous example from [Step 4](../../blob/step4/step.md) in the subfolder [acc-example](acc-example), and now have 3 device kernels `first_kernel`, `second_kernel`, `third_kernel` and a single `host_kernel`.
-The `third_kernel` depends on output of `host_kernel, first_kernel, second_kernel`, which in turn are independent of each other and therefore can, in priciple, run parallel to each other.
+The `third_kernel` depends on output of `host_kernel, first_kernel, second_kernel`, which in turn are independent of each other and therefore can, in principle, run parallel to each other.
 The listing below is the parallelized version from file [acc-example/main-async.c](acc-example/main-async.c), the serial version may be found in file [acc-example/main.c](acc-example/main.c)
 
-With OpenACC, most directies can take the additional argument `async(queue)` and `wait(queue-list)` where `queue` is an integer identfying so-called *async queues*, and `queue-list` is a comma-separated list of these.
+With OpenACC, most directives can take the additional argument `async(queue)` and `wait(queue-list)` where `queue` is an integer identifying so-called *async queues*, and `queue-list` is a comma-separated list of these.
 Using these, each execution of a kernel or transfer can be forced
-* to wait for completion of existing entries in the async queues specifed by `queue-list`,
+* to wait for completion of existing entries in the async queues specified by `queue-list`,
 * and then to run in a specific async queue `queue`,
-Additionally there is a `#pragma acc wait` which acts like a barrier to completion of all oustanding queue-entries.
+Additionally there is a `#pragma acc wait` which acts like a barrier to completion of all outstanding queue-entries.
 
 In the listing below, look for these, and compare the serial and parallel versions of the file:
 ```C
@@ -89,7 +89,7 @@ Below a screenshot of what the timeline of an execution of the parallelized vers
 ![](acc-example/example-serial.png)
 As you can see the serial version executed kernels `first_kernel`, `second_kernel`, `host_kernel`, `data copy` and `third_kernel` serially, not utilizing many of the available compute resources on host and device.
 
-The parallel version however starts `first_kernel`, `second_kernel` and `host_kernel` right at the beginning of the data region. The execution of the `data copy` is done when the function call to `host_kernel` has returned. And the execution of `third_kernel` is delayed untils all its dependencies are available, in this case async-queues 1,2 and 3.
+The parallel version however starts `first_kernel`, `second_kernel` and `host_kernel` right at the beginning of the data region. The execution of the `data copy` is done when the function call to `host_kernel` has returned. And the execution of `third_kernel` is delayed until all its dependencies are available, in this case async-queues 1,2 and 3.
 
 ### Your Tasks
 Below a screenshot of the NVIDIA Visual Profiler, of the timeline of a single iteration from the start of this Step 5.

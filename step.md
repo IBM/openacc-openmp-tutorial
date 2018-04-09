@@ -67,7 +67,7 @@ float series(float x, const float *z, const float *w) {
 
 //no #pragma acc routine
 void second_kernel(float *y, const float *z, const float *w) {
-#pragma acc data present(y[0:n],z[0:N],w[0:N])  // needed for compiler to assign device fields to pointers
+#pragma acc data present(y[0:N],z[0:N],w[0:N])  // needed for compiler to assign device fields to pointers
 #pragma acc kernels                 // execution of code-block on GPU, compiler tries to derive appropriate method
 	for (int i=0;i<N;i++)
 	for (int j=0;j<N;j++)

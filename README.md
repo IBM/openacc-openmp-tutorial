@@ -12,8 +12,8 @@ Each step in the tutorial is realized as a branch of this repository. A fresh ch
 * [step2](../../blob/step2/step.md) - have a trivially parallelizable loop executed on a GPU via OpenACC
 * [step3](../../blob/step3/step.md) - sectioning via NVTX markers, accelerate a non-trivial loop via OpenACC, kernel profile analysis
 * [step4](../../blob/step4/step.md) - resolve a warp divergence slowdown, extended OpenACC data regions, optimizing nested loops
-* ...
-* step N - somewhat parallelized and optimized
+* [step5](../../blob/step5/step.md) - overlap host and device computation and communication
+* [step6](../../blob/step6/step.md) - congratulations
 
 ## Application Description
 

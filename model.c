@@ -18,7 +18,7 @@ struct insect_data *insects;
 struct insect_action_data *actions;
 
 #pragma acc routine
-float distance(int a, int b,struct insect_data *restrict insects) {
+float distance(int a, int b, struct insect_data *restrict insects) {
 	float dx,dy,dz,r;
 	dx=insects[a].x-insects[b].x;
 	dy=insects[a].y-insects[b].y;
@@ -28,8 +28,8 @@ float distance(int a, int b,struct insect_data *restrict insects) {
 }
 
 #pragma acc routine
-int relevant_enemy(int leader, int target, struct insect_data *restrict insects, struct insect_action_data *restrict actions) {
-	return (distance(leader, target,insects)<=params.attack_radius) && (insects[target].leader_idx>=0);
+int relevant_enemy(int leader, int target, struct insect_data *restrict insects) {
+	return (distance(leader, target, insects)<=params.attack_radius) && (insects[target].leader_idx>=0);
 }
 
 #pragma acc routine
@@ -89,7 +89,7 @@ void leader_collect_enemies(int leader_id, int insect_idx) {
 		int n=l->num_enemies;
 		for (int d=0;d<leaders[i].num_descendants;d++) {
 			int target_idx=leaders[i].descendants[d];
-			if (relevant_enemy(leader_idx, target_idx, insects, actions)) {
+			if (relevant_enemy(leader_idx, target_idx, insects)) {
 				int n=leaders[leader_id].num_enemies++;
 				leaders[leader_id].enemies[n]=target_idx;
 			}
@@ -385,7 +385,7 @@ int engage_descendants(int target_idx, int insect_idx, int leader_idx, struct in
 	//insect engages target and all of its descendants that are a relevant enemy to leader
 	int n=0;
 	//engage target
-	if (relevant_enemy(leader_idx,target_idx,insects,actions)) {
+	if (relevant_enemy(leader_idx,target_idx,insects)) {
 		attack_defend_fight(insect_idx,target_idx,insects,actions);
 		n=1;
 	}

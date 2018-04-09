@@ -301,17 +301,18 @@ void attack_defend_fight(int attack, int defend) {
 		} else 	if (md/ma>ratio) {
 			//defend wins
 			actions[attack].new_parent=defend;
+			float rm=.1/params.dt;
 #pragma omp atomic
-			actions[attack].rm+=.1/params.dt;
+			actions[attack].rm+=rm;
 #pragma omp atomic
-			actions[defend].rm-=.1/params.dt;
+			actions[defend].rm-=rm;
 		} else {
 			//mass transfer to heavier one
-			float dm=params.fight_mass_rate*(ma-md)/(ma+md);
+			float rm=params.fight_mass_rate*(ma-md)/(ma+md);
 #pragma omp atomic
-			actions[defend].rm-=dm;
+			actions[defend].rm-=rm;
 #pragma omp atomic
-			actions[attack].rm+=dm;
+			actions[attack].rm+=rm;
 		}
 	}
 }

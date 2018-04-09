@@ -14,15 +14,15 @@ float series(float x, const float *z, const float *w) {
 }
 
 void first_kernel(float *y, const float *z, const float *w) {
-#pragma acc data present(y[0:N],z[0:N],w[0:N])
-#pragma acc kernels
+#pragma acc data async(1) present(y[0:N],z[0:N],w[0:N])
+#pragma acc kernels async(1)
 	for (int i=0;i<N;i++)
 		y[i]=series(i,z,w);
 }
 
 void second_kernel(float *y, const float *z, const float *w) {
-#pragma acc data present(y[0:N],z[0:N],w[0:N])
-#pragma acc kernels
+#pragma acc data async(2) present(y[0:N],z[0:N],w[0:N])
+#pragma acc kernels async(2)
 	for (int i=0;i<N;i+=64)
 	for (int j=0;j<N;j+=64)
 #pragma acc atomic
@@ -30,8 +30,8 @@ void second_kernel(float *y, const float *z, const float *w) {
 }
 
 void third_kernel(float *y, const float *z, const float *w, const float *x) {
-#pragma acc data present(y[0:N],z[0:N],w[0:N])
-#pragma acc kernels
+#pragma acc data async(4) wait(1,2,3) present(y[0:N],z[0:N],w[0:N])
+#pragma acc kernels async(4)
 	for (int i=0;i<N;i++)
 		y[i]=z[i]*w[i]*x[i];
 }
@@ -57,7 +57,8 @@ int main() {
 	first_kernel(y1,z,w);
 	second_kernel(y2,z,w);
 	host_kernel(y3,z,w);
-#pragma acc data copyin(y3[0:N])
+#pragma acc data async(3) copyin(y3[0:N])
 	third_kernel(y,y1,y2,y3);
+#pragma acc wait
     }
 }

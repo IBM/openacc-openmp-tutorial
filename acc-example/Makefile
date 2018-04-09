@@ -9,7 +9,7 @@ SRCS=main.c
 
 OBJS=$(SRCS:.c=.o)
 
-all: main
+all: main main-async
 
 $(OBJS): Makefile
 
@@ -20,13 +20,18 @@ main: $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o $@
 
 clean:
-	rm -f $(OBJS) main
+	rm -f $(OBJS) main main-async
 
 run: main
-	./main
+	./$<
 
 run-debug: main
-	cuda-gdb ./main
+	cuda-gdb ./$<
 
-run-nvprof: main
-	nvprof -f -o profile.nvvp ./main
+profile.nvvp: main
+	nvprof -f -o $@ ./$<
+
+profile-async.nvvp: main-async
+	nvprof -f -o $@ ./$<
+
+run-nvprof: profile.nvvp profile-async.nvvp

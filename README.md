@@ -27,7 +27,7 @@ They are special:
   * They command all of their descendants (children, and their children, and their ...) to attack all of this leader's current enemy-insects
   * Enemy-insects of a leader are all insects closer to the leader than a specific attack-radius which themselves have a different leader
 * An attacking insects flies towards each of its enemies. In turn the attacked insect defends by flying away. This is realized by a standard attractive/repulsive force (also Coulomb force, different strengths for attack/defend). 
-  * When an attacking insect gets closer to an enemy they start to fight. This is realized by a mass transfer between the opponents: The heavier getting heavier, and the lighter getting lighter.
+  * A fight is realized by a mass transfer between the opponents: The heavier getting heavier, and the lighter getting lighter.
   * In case the attacking insect looses, that is, it becomes (a specific factor) lighter than its opponent, it deserts to the opponents leader, becoming a child of the defendant and receives a specific desertion-(mass)-reward from the defendant.
 
 The application uses the leap-frog method to iterate insect coordinates, velocities and masses over time, and renders an image for each time-step. Here's a video of the resulting dynamics:

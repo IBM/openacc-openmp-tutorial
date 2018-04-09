@@ -1,38 +1,13 @@
 # openacc-openmp-tutorial
 This is an advanced tutorial to OpenACC and OpenMP.
 
-## Step 5
+## Step 6
 In this step we are going to 
-* overlap host and device computation and communication
-
-### Literature
-* 
-
-### Tools
-* 
+* celebrate.
 
 ### Your Tasks
-Below a screenshot of the NVIDIA Visual Profiler, of the timeline of a single iteration from the start of this Step 5.
-![Screenshot of Step 5 Status using NVIDIA Visual Profiler](images/step5-status.png)
-As you can see, `identify_enemies` being executed on the CPU takes ~6.6ms, and including data transfers, the first execution of the GPU happens only ~7.5ms after the start of the iteration, which takes ~20ms.
-So during the first "half" of the iteration, computation is done only on the CPU, the GPU being idle, and during the second "half" of the iteration, computation is done only on the GPU, the CPU being idle.
-This means a weak ~50% resource utilization.
-* Using asynchronous OpenACC parallel regions, overlap host and device computation, such that `identify_enemies` and `center+coulomb_force` run in parallel.
-* Use asynchronous data transfers and asynchronous waits make the array `leaders[]` available to device-kernel `engage` before this kernel starts.
+* Be proud and happy to have successfully completed this turorial on OpenACC and OpenMP.
+* You have vastly speed-up the applications execution: Starting with 60 seconds models execution, now running only 0.22 seconds means speed-up-factor of almost 300x. Not bad.
 
-### Hints
-* The section `tree_force` is the only remaining host-computation that changes `actions[]`, while `engage` is the only device-computation that changes `actions[].new_parent`. Since we used OpenACC to duplicate this array onto the device, that means that on host and device, separate arrays `actions[]` are being used to accumulate forces. Exiting the OpenACC parallel region will copy back `actions[]`to the host, overwriting the host's results.
-  * These two arrays need to merged properly into one host-array before the code may continue regular execution. Uncomment the commented calls to `setup_device_actions()` and `merge_device_actions()`, then transfer `device_actions` instead of `actions`.
-* In the end the NVIDIA Visual Profiler should show the following timeline: 
-  ![Screenshot of Step 5 Goal using NVIDIA Visual Profiler](images/step5-goal.png)
-  Goal is to bring down total model run time to 0.22s. Again use `make results` to track your progress.
-
-
-## Next Step
-Continue with [Step 6](../../blob/step6/step.md)
-
-
-
-
-
-
+## Congratulations
+![A Firework Bouquet](https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/A_Firework_Bouquet_%28Unsplash%29.jpg/1024px-A_Firework_Bouquet_%28Unsplash%29.jpg)

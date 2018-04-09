@@ -521,10 +521,33 @@ void apply_forces() {
 	}
 }
 
+void tree_forces() {
+	int s=section_start("tree_force");
+#pragma omp parallel for
+	for (int i=0;i<NumInsects;i++) {
+		int parent=insects[i].parent;
+		tree_force(i, parent);
+	}
+	section_end(s);
+}
+
+
+void cc_forces(struct insect_data *restrict insects, struct insect_action_data *restrict actions) {
+	int sccf=section_start("center+coulomb_force");
+#pragma acc data async(1) present(insects[0:NumInsects]) present(actions[0:NumInsects])
+#pragma acc kernels async(1)
+#pragma acc loop parallel
+	for (int i=0;i<NumInsects;i++) {
+		center_force(i,insects,actions);
+		coulomb_repell(i,insects,actions);
+	}
+	section_end(sccf);
+}
+
 void engage(struct insect_data *restrict insects, struct insect_action_data *restrict actions,struct leader_data *restrict leaders) {
 	int s=section_start("engage_enemies");
-#pragma acc data present(insects[0:NumInsects]) present(actions[0:NumInsects]) present(leaders[0:NumLeaders])
-#pragma acc kernels
+#pragma acc data async(1) wait(2) present(insects[0:NumInsects]) present(actions[0:NumInsects]) present(leaders[0:NumLeaders])
+#pragma acc kernels async(1)
 #pragma acc loop parallel
 	for (int i=0;i<NumLeaders;i++) {
 		struct leader_data *l=&leaders[i];
@@ -567,28 +590,20 @@ void calculate_forces() {
 		actions[i].rm=0;
 		actions[i].new_parent=-1;
 	}
-//	setup_device_actions();
-	identify_enemies();
-	int s=section_start("tree_force");
-#pragma omp parallel for
-	for (int i=0;i<NumInsects;i++) {
-		int parent=insects[i].parent;
-		tree_force(i, parent);
-	}
-	section_end(s);
-	s=section_start("center+coulomb_force");
-#pragma acc data copyin(insects[0:NumInsects]) copy(actions[0:NumInsects]) copyin(leaders[0:NumLeaders])
+	setup_device_actions();
+#pragma acc data copyin(insects[0:NumInsects]) \
+                 copy(device_actions[0:NumInsects])      // wrapping copys are sync on device
 {
-#pragma acc kernels
-#pragma acc loop parallel
-	for (int i=0;i<NumInsects;i++) {
-		center_force(i,insects,actions);
-		coulomb_repell(i,insects,actions);
-	}
-	section_end(s);
-	engage(insects,actions,leaders);
+	cc_forces(insects,device_actions);               // async on device queue 1
+	identify_enemies();                              //  sync on host
+#pragma acc data copyin(leaders[0:NumLeaders]) async(2)
+{
+	tree_forces();                                   //  sync on host
+	engage(insects,device_actions,leaders);          // async on device queue 1, but after 2 finished
 }
-//	merge_device_actions();
+#pragma acc wait                                         // must wait for async queues to complete
+}
+	merge_device_actions();
 }
 
 void iteration()

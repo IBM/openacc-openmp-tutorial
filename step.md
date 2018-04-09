@@ -96,7 +96,7 @@ int main() {
 
 It is important to understand that the compiler requires the `#pragma acc data present` even though the `second_kernel()` is called with a `#pragma acc data` region: The compiler does not change the meaning of variables in such regions: Variables never become device-variables outside OpenACC compute constructs like `#pragma acc kernels` or `#pragma acc routine`.
 
-Compared to the example in [Step 2](../../blob/step2/step.md), where the compiler infered `implicit copy(z[:]), implicit copyout(y[:])`, it still infers same for this examples, but the parallel region for these constructs end ahead of the `second_kernel`. Since the `second_kernel` requires the same array (the compiler being unable to infer this), we need to make these explicit here.
+Compared to the example in [Step 2](../../blob/step2/step.md), where the compiler infered `implicit copy(z[:]), implicit copyout(y[:])`, it still infers same for this example, but the parallel region for these constructs ends ahead of the `second_kernel`. Since the `second_kernel` requires the same arrays (the compiler being unable to infer this), we need to make these explicit here.
 
 ### Your Tasks
 * Accelerate the execution of `engage()` using the OpenACC, bringing down the total model iteration time to `0.26s`. As earlier, have a validation relative deviation in `kinetic_energy` less than `10^-8`. Use `make results` to check your progress.

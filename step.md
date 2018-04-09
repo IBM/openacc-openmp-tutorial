@@ -69,8 +69,8 @@ float series(float x, const float *z, const float *w) {
 void second_kernel(float *y, const float *z, const float *w) {
 #pragma acc data present(y[0:N],z[0:N],w[0:N])  // needed for compiler to assign device fields to pointers
 #pragma acc kernels                 // execution of code-block on GPU, compiler tries to derive appropriate method
-	for (int i=0;i<N;i++)
-	for (int j=0;j<N;j++)
+	for (int i=0;i<N;i+=8)
+	for (int j=0;j<N;j+=8)
 #pragma acc atomic
 		y[(i*j)%N]+=z[i]*w[j];
 }
@@ -80,7 +80,9 @@ int main() {
 	w=malloc(sizeof(*w)*N); w[0]=1;
 	a[0]=1; a[1]=2; a[2]=3; a[3]=4;
 #pragma acc update device(a)        // update variable a on device by those on host
-#pragma acc data copyin(w[0:N])     // define data region; on entry create field w[0:N] on device by copying from host
+#pragma acc data copyin(w[0:N]) \   // define data region; on entry create field w[0:N] on device by copy from host
+                 copyin(z[0:N]) \   // on entry create z[0:N] on device by copy from host
+                 copyout(y[0:N])    // on entry create uninitialized field y[0:N] on device, copy-out on exit
     {                               // data region starts here
 #pragma acc kernels                 // execution of code-block on GPU, compiler tries to derive appropriate method
    	{
@@ -92,7 +94,9 @@ int main() {
 }
 ```
 
-It it important to understand that the compiler requires the `#pragma acc data present` even though the `second_kernel()` is called with a `#pragma acc data` region: The compiler does not change the meaning of variables in such regions: Variables never become device-variables outside OpenACC compute constructs like `#pragma acc kernels` or `#pragma acc routine`.
+It is important to understand that the compiler requires the `#pragma acc data present` even though the `second_kernel()` is called with a `#pragma acc data` region: The compiler does not change the meaning of variables in such regions: Variables never become device-variables outside OpenACC compute constructs like `#pragma acc kernels` or `#pragma acc routine`.
+
+Compared to the example in [Step 2](../../blob/step2/step.md), where the compiler infered `implicit copy(z[:]), implicit copyout(y[:])`, it still infers same for this examples, but the parallel region for these constructs end ahead of the `second_kernel`. Since the `second_kernel` requires the same array (the compiler being unable to infer this), we need to make these explicit here.
 
 ### Your Tasks
 * Accelerate the execution of `engage()` using the OpenACC, bringing down the total model iteration time to `0.26s`. As earlier, have a validation relative deviation in `kinetic_energy` less than `10^-8`. Use `make results` to check your progress.

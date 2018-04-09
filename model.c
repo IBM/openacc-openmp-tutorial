@@ -16,6 +16,7 @@ struct leader_data *leaders;
 
 struct insect_data *insects;
 struct insect_action_data *actions;
+struct insect_action_data *device_actions;
 
 #pragma acc routine
 float distance(int a, int b, struct insect_data *restrict insects) {
@@ -269,6 +270,7 @@ void setup_model() {
 	//setup insects
 	insects=malloc(NumInsects*sizeof(struct insect_data));
 	actions=malloc(NumInsects*sizeof(struct insect_action_data));
+	device_actions=malloc(NumInsects*sizeof(struct insect_action_data));
 	float x,y,z;
 	float lx=params.lx,ly=params.ly,lz=params.lz;
 	float x0=-lx/2;
@@ -520,6 +522,7 @@ void apply_forces() {
 }
 
 void engage(struct insect_data *restrict insects, struct insect_action_data *restrict actions,struct leader_data *restrict leaders) {
+	int s=section_start("engage_enemies");
 #pragma acc data present(insects[0:NumInsects]) present(actions[0:NumInsects]) present(leaders[0:NumLeaders])
 #pragma acc kernels
 #pragma acc loop parallel
@@ -536,6 +539,24 @@ void engage(struct insect_data *restrict insects, struct insect_action_data *res
 			}
 		}
 	}
+	section_end(s);
+}
+
+void merge_device_actions() {
+	int s=section_start("merge-actions");
+	for (int i=0;i<NumInsects;i++) {
+		actions[i].fx+=device_actions[i].fx;
+		actions[i].fy+=device_actions[i].fy;
+		actions[i].fz+=device_actions[i].fz;
+		actions[i].rm+=device_actions[i].rm;
+		actions[i].new_parent=device_actions[i].new_parent;
+	}
+	section_end(s);
+}
+
+void setup_device_actions() {
+	size_t actions_size=NumInsects*sizeof(struct insect_action_data);
+	memcpy(device_actions, actions, actions_size);
 }
 
 void calculate_forces() {
@@ -546,6 +567,7 @@ void calculate_forces() {
 		actions[i].rm=0;
 		actions[i].new_parent=-1;
 	}
+//	setup_device_actions();
 	identify_enemies();
 	int s=section_start("tree_force");
 #pragma omp parallel for
@@ -564,10 +586,9 @@ void calculate_forces() {
 		coulomb_repell(i,insects,actions);
 	}
 	section_end(s);
-	s=section_start("engage_enemies");
 	engage(insects,actions,leaders);
 }
-	section_end(s);
+//	merge_device_actions();
 }
 
 void iteration()

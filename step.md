@@ -27,7 +27,7 @@ In this step we are going to
   Goal is to bring the total model time down to 0.67s. Track your progress using `make results` with the same acceptance criterion as in previous steps.
 * Run more iterations of the application using the command
   ```
-  [user@host openacc-openmp-tutorial]$ ITERATIONS=256 make run SANDBOX="nvprof -f -o profile.nvvp --kernels ::calculate_forces:(^1|01|51)$$ --analysis-metrics --analysis-metrics"
+  [user@host openacc-openmp-tutorial]$ ITERATIONS=256 make run SANDBOX='nvprof -f -o profile.nvvp --kernels ::calculate_forces:(^1|01|51)$$ --analysis-metrics'
   ==158963== NVPROF is profiling process 158963, command: ./main
   enabling rivalism
   iteration 0

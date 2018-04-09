@@ -379,52 +379,6 @@ void attack_defend_fight(int attack, int defend, struct insect_data *restrict in
 	}
 }
 
-
-#pragma acc routine
-int engage_descendants(int target_idx, int insect_idx, int leader_idx, struct insect_data *restrict insects, struct insect_action_data *restrict actions) {
-	//insect engages target and all of its descendants that are a relevant enemy to leader
-	int n=0;
-	//engage target
-	if (relevant_enemy(leader_idx,target_idx,insects)) {
-		attack_defend_fight(insect_idx,target_idx,insects,actions);
-		n=1;
-	}
-	//engage target's descendants
-	struct insect_data *target=&insects[target_idx];
-	for (int i=0;i<target->nchildren;i++) {
-		int child_idx=target->children[i];
-		n+=engage_descendants(child_idx,insect_idx,leader_idx,insects,actions);
-	}
-	return n;
-}
-
-#pragma acc routine
-void engage_enemies(int insect_idx, struct insect_data *restrict insects, struct insect_action_data *restrict actions) {
-	struct insect_data *parent,*leader,*insect;
-	
-	insect=&insects[insect_idx];
-	int leader_idx=insect->leader_idx;
-	if (leader_idx<0) return;
-	leader=&insects[leader_idx];
-
-	int node_idx=leader_idx;
-	int parent_idx=leader->parent;
-	int n=0;
-	while (parent_idx>=0) {
-		parent=&insects[parent_idx];
-		//all peers of node are enenmies, i.e. all children of parent except node
-		for (int i=0;i<parent->nchildren;i++) {
-			int child_idx=parent->children[i];
-			if (child_idx!=node_idx) {
-				n+=engage_descendants(child_idx,insect_idx,leader_idx,insects,actions);
-			}
-		}
-		//ascend to parent
-		node_idx=parent_idx;
-		parent_idx=parent->parent;
-	}
-}
-
 #pragma acc routine
 void center_force(int insect_idx, struct insect_data *restrict insects, struct insect_action_data *restrict actions) {
 	struct insect_data *insect=&insects[insect_idx];

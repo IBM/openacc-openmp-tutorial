@@ -14,7 +14,8 @@ The listing below is the parallelized version from file [acc-example/main-async.
 With OpenACC, most directives can take the additional argument `async(queue)` and `wait(queue-list)` where `queue` is an integer identifying so-called *async queues*, and `queue-list` is a comma-separated list of these.
 Using these, each execution of a kernel or transfer can be forced
 * to wait for completion of existing entries in the async queues specified by `queue-list`,
-* and then to run in a specific async queue `queue`,
+* and then to run in a specific async queue `queue`.
+
 Additionally there is a `#pragma acc wait` which acts like a barrier to completion of all outstanding queue-entries.
 
 In the listing below, look for these, and compare the serial and parallel versions of the file:
@@ -82,10 +83,11 @@ int main() {
     }
 }
 ```
-Below a screenshot of what the timeline of an execution of the serial (i.e., non-parallelized) version:
+
+Below a screenshot of the timeline of an execution of the serial (i.e., non-parallelized) version:
 ![](acc-example/example-async.png)
 
-Below a screenshot of what the timeline of an execution of the parallelized version:
+Below a screenshot of the timeline of an execution of the parallelized version:
 ![](acc-example/example-serial.png)
 As you can see the serial version executed kernels `first_kernel`, `second_kernel`, `host_kernel`, `data copy` and `third_kernel` serially, not utilizing many of the available compute resources on host and device.
 

@@ -3,9 +3,10 @@
 #BSUB -n 1
 #BSUB -e out/stderr
 #BSUB -o out/stdout
-#BSUB -q s822lc_p100
+#BSUB -gpu "num=1"
 #BSUB -x
 
+export CUDA_VISIBLE_DEVICES=0
 export OMP_NUM_THREADS=20
 export OMP_PROC_BIND=spread
 export OMP_DISPLAY_ENV=false

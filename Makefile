@@ -47,10 +47,10 @@ clean:
 run: out/log.txt
 
 out/log.txt: main
-	./run
+	${SUBMIT_COMMAND} ./run
 
 run-debug: main
-	SANDBOX=gdb ./run
+	SANDBOX=gdb ${SUBMIT_COMMAND} ./run
 
 model.o: model.h
 main.o: main.h

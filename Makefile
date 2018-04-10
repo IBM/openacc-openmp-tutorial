@@ -3,8 +3,12 @@
 
 COMPILER=pgi
 
+CUDA_LIB_PATH ?= /usr/local/cuda/lib64
+
+LIBS_CUDA=-L$(CUDA_LIB_PATH) -L$(CUDA_LIB_PATH)/stubs
+
 DEFINITIONS=-DUSE_NVTX
-LIBS=-lm -lpng -L/usr/local/cuda/lib64 -lnvToolsExt -lcuda -lcudart
+LIBS=-lm -lpng $(LIBS_CUDA) -lnvToolsExt -lcuda -lcudart
 ifeq ($(COMPILER),gnu)
 	CC=gcc
 	#OPTFLAGS=-O0 -g

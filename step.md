@@ -89,7 +89,7 @@ Below a screenshot of the timeline of an execution of the serial (i.e., non-para
 
 Below a screenshot of the timeline of an execution of the parallelized version:
 ![](acc-example/example-async.png)
-As you can see the serial version executed kernels `first_kernel`, `second_kernel`, `host_kernel`, `data copy` and `third_kernel` serially, not utilizing many of the available compute resources on host and device.
+As you can see the serial version executed kernels `first_kernel`, `second_kernel`, `host_kernel` (the gap!), `data copy` and `third_kernel` serially, not utilizing many of the available compute resources on host and device.
 
 The parallel version however starts `first_kernel`, `second_kernel` and `host_kernel` right at the beginning of the data region. The execution of the `data copy` is done when the function call to `host_kernel` has returned. And the execution of `third_kernel` is delayed until all its dependencies are available, in this case async-queues 1,2 and 3.
 

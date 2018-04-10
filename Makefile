@@ -49,13 +49,13 @@ clean:
 run: out/log.txt
 
 out/log.txt: main
-	./run
+	${SUBMIT_COMMAND} ./run
 
 run-debug: main
-	SANDBOX=cuda-gdb ./run
+	SANDBOX=cuda-gdb ${SUBMIT_COMMAND} ./run
 
 run-nvprof: main
-	SANDBOX="nvprof -f -o profile.nvvp" ./run
+	SANDBOX="nvprof -f -o profile.nvvp" ${SUBMIT_COMMAND} ./run
 
 results: validation
 

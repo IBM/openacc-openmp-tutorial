@@ -524,7 +524,7 @@ void calculate_forces() {
 	s=section_start("center+coulomb_force");
 #pragma acc data copyin(insects[0:NumInsects]) copy(actions[0:NumInsects])
 #pragma acc kernels
-#pragma acc loop parallel
+#pragma acc loop independent
 	for (int i=0;i<NumInsects;i++) {
 		center_force(i,insects,actions);
 		coulomb_repell(i,insects,actions);

@@ -134,7 +134,7 @@ for (int i=0;i<NumInsects;i++) {
 * Hints:
   * Directives for data transfer operations exist in a variety of variants: `#pragma acc data (create|copyin|copyout|copy|present|...)`, where copy means copyin and copyout.
   * Directives of type `#pragma acc declare (create|copyin|...)` work well for global block variables like intrinsic types and structs. They also work for pointers, but what is created on the device is a variable that contains the value of the pointer, and no more.
-  * It may be that the compiler has a hard time believing that a loop is parallelizable. Such a belief may be overridden using a `#pragma acc loop parallel` in the line preceding the loop.
+  * It may be that the compiler has a hard time believing that a loop is parallelizable. Such a belief may be overridden using a `#pragma acc loop independent` in the line preceding the loop.
 * Optional:
   *  Use `nvvp` to inspect host-to-device and device-to-host transfer sizes and throughputs, kernel register count, grid-size, block-size, etc... and verify that the values are just as you expected.
   * In the `Makefile` the PGI compiler is configured with the flag `-ta=tesla:pinned`. See if you can use change the mode from `pinned` to `managed` in order to avoid explicitly transferring the fields to/from the device.

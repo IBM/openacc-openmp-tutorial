@@ -601,14 +601,14 @@ void calculate_forces() {
 #pragma acc data copyin(insects[0:NumInsects]) copy(actions[0:NumInsects])
 #pragma acc kernels
 {
-#pragma acc loop parallel
+#pragma acc loop independent
 	for (int i=0;i<NumInsects;i++) {
 		center_force(i,insects,actions);
 		coulomb_repell(i,insects,actions);
 	}
 	section_end(s);
 	s=section_start("engage_enemies");
-#pragma acc loop parallel
+#pragma acc loop independent
 	for (int i=0;i<NumInsects;i++) {
 		engage_enemies(i,insects,actions);
 	}

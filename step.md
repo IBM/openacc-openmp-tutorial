@@ -10,7 +10,7 @@ In this step we are going to
 ### Introduction to this step
 In previous [Step 3](../../blob/step3/step.md) you have witnessed that for the kernel
 ```C
-#pragma acc loop parallel
+#pragma acc loop independent
    for (int i=0;i<NumInsects;i++) {
       engage_enemies(i,insects,actions);
    }

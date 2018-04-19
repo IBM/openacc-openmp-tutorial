@@ -52,6 +52,8 @@ make run
 make results
 ```
 
+The Makefile supports job queueing systems like [Platform LSF](https://en.wikipedia.org/wiki/Platform_LSF). In case you want to have the application runs submitted to such a queueing system, set the environment variable `SUBMIT_COMMAND` to interactive job submission. For LSF this is: `export SUBMIT_COMMAND="bsub -Is <"`.
+
 The application should run for a minute and the output should be similar to below, and pass validation.
 ```
 enabling rivalism

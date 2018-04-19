@@ -9,9 +9,13 @@ SRCS=main.c
 
 OBJS=$(SRCS:.c=.o)
 
+TARGETS=$(OBJS) main
+
+.PHONY: all clean run run-debug run-nvprof
+
 all: main
 
-$(OBJS): Makefile
+$(TARGETS): Makefile
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -20,13 +24,13 @@ main: $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o $@
 
 clean:
-	rm -f $(OBJS) main
+	rm -f $(TARGETS)
 
 run: main
-	./main
+	${SUBMIT_COMMAND} ./run
 
 run-debug: main
-	cuda-gdb ./main
+	SANDBOX=cuda-gdb ${SUBMIT_COMMAND} ./run
 
 run-nvprof: main
-	nvprof -f -o profile.nvvp ./main
+	SANDBOX="nvprof -f -o profile.nvvp" ${SUBMIT_COMMAND} ./run

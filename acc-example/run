@@ -1,0 +1,10 @@
+#!/bin/bash
+#BSUB -J ACC_MP_TUT
+#BSUB -n 1
+#BSUB -R "rusage[ngpus_excl_p=1]"
+#BSUB -x
+
+export OMP_NUM_THREADS=20
+export OMP_PROC_BIND=spread
+export OMP_DISPLAY_ENV=false
+$SANDBOX ./main

@@ -537,7 +537,7 @@ void cc_forces(struct insect_data *restrict insects, struct insect_action_data *
 	int sccf=section_start("center+coulomb_force");
 #pragma acc data async(1) present(insects[0:NumInsects]) present(actions[0:NumInsects])
 #pragma acc kernels async(1)
-#pragma acc loop parallel
+#pragma acc loop independent
 	for (int i=0;i<NumInsects;i++) {
 		center_force(i,insects,actions);
 		coulomb_repell(i,insects,actions);
@@ -549,7 +549,7 @@ void engage(struct insect_data *restrict insects, struct insect_action_data *res
 	int s=section_start("engage_enemies");
 #pragma acc data async(1) wait(2) present(insects[0:NumInsects]) present(actions[0:NumInsects]) present(leaders[0:NumLeaders])
 #pragma acc kernels async(1)
-#pragma acc loop parallel
+#pragma acc loop independent
 	for (int i=0;i<NumLeaders;i++) {
 		struct leader_data *l=&leaders[i];
 		int ne=l->num_enemies;

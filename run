@@ -1,7 +1,7 @@
 #!/bin/bash
 #BSUB -J ACC_MP_TUT
 #BSUB -n 1
-#BSUB -R "rusage[ngpus_shared=1]"
+#BSUB -R "rusage[ngpus_excl_p=1]"
 #BSUB -x
 
 export OMP_NUM_THREADS=20

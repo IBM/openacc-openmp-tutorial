@@ -2,7 +2,7 @@
 This is an advanced tutorial to OpenACC and OpenMP.
 
 After completing this tutorial you will have gained the required expertise to leverage OpenACC and OpenMP for parallelization and acceleration of your application.
-You are going to work on a simple simulation-type application which features some of the typical difficulties found in real-world applications. The tutorial is organized as multiple smaller but non-trivial steps. Each step provides learning material with simple code examples and a set tasks and goals to fulfill.
+You are going to work on a simple simulation-type application which features some of the typical difficulties found in real-world applications. The tutorial is organized as multiple smaller but non-trivial steps. Each step provides learning material with simple code examples and a set of tasks and goals to fulfill.
 
 ## Organization
 
